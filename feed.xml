@@ -1,0 +1,45 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.title | xml_escape }}</title>
+    <description>{{ site.description | xml_escape }}</description>
+    <link>{{ site.url }}{{ site.baseurl }}/</link>
+    <atom:link href="{{ "/feed.xml" | absolute_url }}" rel="self" type="application/rss+xml" />
+    <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
+    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+    <generator>Jekyll v{{ jekyll.version }}</generator>
+    
+    {% comment %}
+      下面是核心修改部分：
+      1. 我们把 site.posts 和 site.notes 合并成一个叫 all_items 的新数组。
+      2. 我们用 sort: 'date' 把这个合并后的数组按日期排序。
+      3. 我们用 | reverse 把它变成降序（最新的在最前面）。
+    {% endcomment %}
+    {% assign all_items = site.posts | concat: site.notes | sort: 'date' | reverse %}
+
+    {% for item in all_items limit:20 %}
+      <item>
+        <title>{{ item.title | xml_escape }}</title>
+        <description>
+          {% if item.collection == 'notes' %}
+            [笔记] {{ item.excerpt | strip_html | xml_escape }}
+          {% else %}
+            {{ item.content | xml_escape }}
+          {% endif %}
+        </description>
+        <pubDate>{{ item.date | date_to_rfc822 }}</pubDate>
+        <link>{{ item.url | absolute_url }}</link>
+        <guid isPermaLink="true">{{ item.url | absolute_url }}</guid>
+        {% for tag in item.tags %}
+        <category>{{ tag | xml_escape }}</category>
+        {% endfor %}
+        {% for cat in item.categories %}
+        <category>{{ cat | xml_escape }}</category>
+        {% endfor %}
+      </item>
+    {% endfor %}
+  </channel>
+</rss>
