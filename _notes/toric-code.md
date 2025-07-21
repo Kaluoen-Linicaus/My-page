@@ -18,3 +18,11 @@ latexurl: '/files/Toric_Code.zip' # <-- 填上你刚才上传的源码文件名
 [下载PDF笔记]({{ page.pdfurl }})
 
 [下载LaTeX源码]({{ page.latexurl }})
+
+### 关于LaTeX源码
+
+本笔记的LaTeX源码已打包为 `.zip` 文件。您可以使用任意标准的LaTeX发行版（如 TeX Live, MiKTeX）或在线平台（如 Overleaf）进行编译。
+
+*   **编译环境**: 推荐使用 `XeLaTeX` 或 `pdfLaTeX` 进行编译。
+*   **主文件**: 解压后，请编译主文件 `main.tex` (或以你的主文件名命名)。
+*   **使用许可**: 欢迎您下载、学习和引用本笔记的内容。如果您在自己的工作或学习中使用了本笔记的源码或思路，希望能注明来源。这对我将是莫大的鼓励。
