@@ -15,9 +15,9 @@ latexurl: '/files/Toric_Code.zip' # <-- 填上你刚才上传的源码文件名
 
 你可以在列表页直接下载，也可以在这里下载：
 
-[下载PDF笔记]({{ page.pdfurl }})
+[下载PDF笔记]({{ page.pdfurl | relative_url }})
 
-[下载LaTeX源码]({{ page.latexurl }})
+[下载LaTeX源码]({{ page.latexurl | relative_url }})
 
 ### 关于LaTeX源码
 
