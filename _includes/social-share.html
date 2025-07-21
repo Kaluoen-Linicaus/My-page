@@ -1,4 +1,4 @@
-{% include base_path %}
+<!-- {% include base_path %}
 
 <section class="page__share">
   {% if site.data.ui-text[site.locale].share_on_label %}
@@ -13,3 +13,100 @@
 
   <a href="https://x.com/intent/post?text={{ base_path }}{{ page.url }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X"><i class="fab fa-x-twitter" aria-hidden="true"></i><span> X (formerly Twitter)</span></a>
 </section>
+ -->
+
+ {% include base_path %}
+
+<section class="page__share">
+  {% if site.data.ui-text[site.locale].share_on_label %}
+    <h4 class="page__share-title">{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
+  {% endif %}
+
+  <a href="https://bsky.app/intent/compose?text={{ site.url | append: site.baseurl | append: page.url }}" class="btn btn--bluesky" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Bluesky"><i class="fab fa-bluesky" aria-hidden="true"></i><span> Bluesky</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ site.url | append: site.baseurl | append: page.url }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ site.url | append: site.baseurl | append: page.url }}" class="btn btn--linkedin" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://x.com/intent/post?text={{ site.url | append: site.baseurl | append: page.url }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X"><i class="fab fa-x-twitter" aria-hidden="true"></i><span> X (formerly Twitter)</span></a>
+
+  <!-- =================================================================== -->
+  <!-- ============= 下面是我们新添加的 QQ 和 微信分享按钮 ============= -->
+  <!-- =================================================================== -->
+
+  <!-- QQ分享按钮 -->
+  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ site.url | append: site.baseurl | append: page.url }}&title={{ page.title | url_encode }}&summary={{ page.excerpt | strip_html | url_encode }}"
+     class="btn btn--info"
+     title="分享到QQ"
+     onclick="window.open(this.href, 'qq-share', 'width=550,height=450');return false;">
+    <i class="fab fa-fw fa-qq" aria-hidden="true"></i><span> QQ</span>
+  </a>
+
+  <!-- 微信分享按钮 (点击后弹出二维码) -->
+  <a href="javascript:void(0);" id="wechat-share-button" class="btn btn--success" title="分享到微信">
+    <i class="fab fa-fw fa-weixin" aria-hidden="true"></i><span> 微信</span>
+  </a>
+</section>
+
+<!-- =================================================================== -->
+<!-- ============= 下面是微信二维码弹窗和控制它的脚本 ============= -->
+<!-- =================================================================== -->
+
+<!-- 微信二维码弹窗 (默认隐藏) -->
+<div id="wechat-qr-code-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 25px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 1000; text-align: center;">
+  <h4 style="margin-top: 0; margin-bottom: 15px; font-weight: bold;">分享到微信</h4>
+  <div id="wechat-qr-code-img" style="width: 180px; height: 180px; margin: 0 auto;"></div>
+  <p style="font-size: 13px; color: #666; margin-top: 15px; margin-bottom: 0;">用微信扫一扫，即可在手机上分享</p>
+  <span id="close-wechat-modal" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; color: #aaa; line-height: 1;">×</span>
+</div>
+
+<!-- 引入生成二维码的JS库 -->
+<script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+
+<!-- 控制微信弹窗的JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var wechatButton = document.getElementById('wechat-share-button');
+    var wechatModal = document.getElementById('wechat-qr-code-modal');
+    var closeButton = document.getElementById('close-wechat-modal');
+    var qrCodeContainer = document.getElementById('wechat-qr-code-img');
+    var qrCodeGenerated = false; // 标志位，防止重复生成二维码
+
+    if (wechatButton && wechatModal && qrCodeContainer) {
+      // 点击微信按钮，显示弹窗
+      wechatButton.addEventListener('click', function() {
+        if (!qrCodeGenerated) { // 只有在二维码未生成时才创建
+          new QRCode(qrCodeContainer, {
+            text: "{{ site.url | append: site.baseurl | append: page.url }}",
+            width: 180,
+            height: 180,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+          });
+          qrCodeGenerated = true;
+        }
+        wechatModal.style.display = 'block';
+      });
+
+      // 点击关闭按钮，隐藏弹窗
+      closeButton.addEventListener('click', function() {
+        wechatModal.style.display = 'none';
+      });
+      
+      // 点击弹窗外部区域，隐藏弹窗
+      window.addEventListener('click', function(event) {
+        if (event.target == wechatModal) {
+          wechatModal.style.display = 'none';
+        }
+      });
+
+      // 按下 Esc 键，隐藏弹窗
+      window.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          wechatModal.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
