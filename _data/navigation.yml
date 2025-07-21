@@ -21,7 +21,7 @@ main:
     url: /portfolio/
 
   - title: "我的笔记"
-    url: /note/   
+    url: /year-archive/   
     
   # - title: "Blog Posts"
   #   url: /year-archive/
